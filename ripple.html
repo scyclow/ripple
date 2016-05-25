@@ -1,0 +1,149 @@
+<DOCTYPE! html>
+<html>
+
+<head>
+  <title>ripple</title>
+  <META charset="UTF-8">
+  <META name="viewport" content="width=device-width, initial-scale=1.0">
+  <META http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <META
+    name="description"
+    content="This page does not exist"
+  >
+  <META
+    name="keywords"
+    content="god, sex, power, the, love, wealth, happiness"
+  >
+  <!-- css reset -->
+  <style type="text/css">
+    a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+    body {background-color: black}
+  </style>
+
+</head>
+
+<body>
+  <div id="app">
+  </div>
+
+  <svg id="svg"></svg>
+
+  <script>
+    function dynamicInterval(fn, startTime) {
+      const set = (time, ...args) => setInterval(() => fn(...args), time);
+      // let interval = set(startTime);
+      let interval;
+      return (time, ...args) => {
+        let newInterval = set(time, ...args);
+        clearInterval(interval);
+        return interval = newInterval;
+      };
+    }
+
+    const moveQueue = [];
+    document.onclick = (e) => {
+      const x = e.clientX + window.pageXOffset;
+      const y = e.clientY + window.pageYOffset;
+      moveQueue.forEach(fn => fn(x, y));
+    };
+
+    function onMouseClick(i, fn) {
+      moveQueue[i] = fn;
+    }
+
+    const randMax = (ceil) => Math.floor(
+      Math.random() * ceil
+    );
+
+    function randHex() {
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += randMax(16).toString(16);
+      }
+      return color.toUpperCase();
+      // return Math.random() > 0.5 ? '#000' : '#fff'
+    }
+
+    const basePxSize = 5;
+    const basePxCount = 1280 * 705;
+    const actualPxCount = window.innerWidth * window.innerHeight;
+
+    const pixelSize = Math.max(
+      Math.round(basePxSize * (actualPxCount/basePxCount)),
+      3
+    );
+
+    const pxNum = (window.innerWidth/pixelSize) * (window.innerHeight/pixelSize)
+
+    const style = {
+      display: 'inline-block',
+      width: pixelSize,
+      height: pixelSize,
+      'background-color': 'blue',
+      // margin: '2px'
+    };
+
+    const app = document.getElementById('app');
+    const els = [];
+
+    for (let i = 0; i < pxNum; i++) {
+      let el = document.createElement('rect');
+      Object.assign(el.style, style);
+      app.appendChild(el);
+      els.push(el);
+    }
+
+    // for each el
+    els.forEach((el, i) => {
+
+      // function* colorGen(colors) {
+      //   for (let i = 0;; i++) {
+      //     yield el.style['background-color'] = colors[i%colors.length];
+      //   }
+      // }
+
+      // let colorify = colorGen(['blue', 'black']);
+      // let colors = ['blue', 'orange', 'black']
+      // let ix = 0;
+      let colorify = (dist) => {
+        el.style['background-color'] =
+          el.style['background-color'] === 'blue' ?
+            '#ff9900' :
+            'blue'
+        // el.style['background-color'] = colors[ix++%colors.length]
+         // = randHex();
+      }
+
+      // let left = Math.abs(el.offsetLeft - (window.innerWidth/2))
+      // let top = Math.abs(el.offsetTop - (window.innerHeight/2))
+      // let dist = Math.sqrt(Math.pow(left, 2) + Math.pow(top, 2))
+
+      // setInterval(colorify, dist * 3)
+
+
+      let change = dynamicInterval(colorify, 100)
+
+      // let left = el.offsetLeft - (window.innerWidth / 3);
+      // let top = el.offsetTop - (window.innerHeight * 0.7);
+      // let dist = Math.sqrt(Math.pow(left, 2) + Math.pow(top, 2))
+      // change(dist * 3)
+
+      onMouseClick(i, (x, y) => {
+        let left = Math.abs(el.offsetLeft - x)
+        let top = Math.abs(el.offsetTop - y)
+        let dist = Math.sqrt(Math.pow(left, 2) + Math.pow(top, 2))
+        // el.innerHTML = dist;
+
+        change(dist * 3, dist)
+      })
+    })
+    // todo - make colors flux-shade
+    // - try out with canvas/svg?
+
+
+
+
+  </script>
+</body>
+
+</html>
