@@ -1,0 +1,113 @@
+<DOCTYPE! html>
+<html>
+
+<head>
+  <title>ripple</title>
+  <META charset="UTF-8">
+  <META name="viewport" content="width=device-width, initial-scale=1.0">
+  <META http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <META
+    name="description"
+    content="This page does not exist"
+  >
+  <META
+    name="keywords"
+    content="god, sex, power, the, love, wealth, happiness"
+  >
+  <!-- css reset -->
+  <style type="text/css">
+    a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+    body {background-color: black}
+  </style>
+
+</head>
+
+<body>
+  <div id="app">
+  </div>
+
+  <svg id="svg"></svg>
+
+  <script>
+    'use strict';
+
+    function dynamicInterval(fn, startTime) {
+      var set = function set(time) {
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        return setInterval(function () {
+          return fn.apply(undefined, args);
+        }, time);
+      };
+      var interval = void 0;
+      return function (time) {
+        for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          args[_key2 - 1] = arguments[_key2];
+        }
+
+        var newInterval = set.apply(undefined, [time].concat(args));
+        clearInterval(interval);
+        return interval = newInterval;
+      };
+    }
+
+    var moveQueue = [];
+    document.onclick = function (e) {
+      var x = e.clientX + window.pageXOffset;
+      var y = e.clientY + window.pageYOffset;
+      moveQueue.forEach(function (fn) {
+        return fn(x, y);
+      });
+    };
+
+    function onMouseClick(i, fn) {
+      moveQueue[i] = fn;
+    }
+
+    var basePxSize = 5;
+    var basePxCount = 1280 * 705;
+    var actualPxCount = window.innerWidth * window.innerHeight;
+
+    var pixelSize = Math.max(Math.round(basePxSize * (actualPxCount / basePxCount)), 3);
+
+    var pxNum = window.innerWidth / pixelSize * (window.innerHeight / pixelSize);
+
+    var style = {
+      display: 'inline-block',
+      width: pixelSize,
+      height: pixelSize,
+      'background-color': 'blue'
+    };
+
+    var app = document.getElementById('app');
+    var els = [];
+
+    for (var i = 0; i < pxNum; i++) {
+      var el = document.createElement('rect');
+      Object.assign(el.style, style);
+      app.appendChild(el);
+      els.push(el);
+    }
+
+    els.forEach(function (el, i) {
+      var colorify = function colorify(dist) {
+        el.style['background-color'] = el.style['background-color'] === 'blue' ? '#ff9900' : 'blue';
+      };
+
+      var change = dynamicInterval(colorify, 100);
+
+      onMouseClick(i, function (x, y) {
+        var left = Math.abs(el.offsetLeft - x);
+        var top = Math.abs(el.offsetTop - y);
+        var dist = Math.sqrt(Math.pow(left, 2) + Math.pow(top, 2));
+
+        change(dist * 3, dist);
+      });
+    });
+
+  </script>
+</body>
+
+</html>
