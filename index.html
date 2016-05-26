@@ -81,6 +81,12 @@
       'background-color': 'blue'
     };
 
+    Object.assign = Object.assign || function(target, other) {
+      for (var i in other) {
+        target[i] = other[i];
+      }
+    }
+
     var app = document.getElementById('app');
     var els = [];
 
